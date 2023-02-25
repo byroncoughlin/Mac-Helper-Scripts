@@ -1,0 +1,39 @@
+#needs to be copied into apple's script editor
+
+on run downloadInfo
+	
+	set noteName to "↓Downloads↓"
+	set myDate to date string of (current date)
+	set myTime to time string of (current date)
+	set myStamp to myDate & " " & myTime
+	
+	set entry to "—————————————————————" & return & myStamp & "
+" & (item 1 of downloadInfo)
+	
+	tell application "Notes"
+		tell account "iCloud"
+			#make new paragraph at after first paragraph of text of note noteName with data entry
+			set noteText to get body of note noteName
+			set noteList to my theSplit(noteText, noteName)
+			
+			set body of note noteName to "<h1>" & "↓Downloads↓" & "</h1>" & entry & second item of noteList
+		end tell
+	end tell
+	
+	
+	
+end run
+
+
+on theSplit(theString, theDelimiter)
+	-- save delimiters to restore old settings
+	set oldDelimiters to AppleScript's text item delimiters
+	-- set delimiters to delimiter to be used
+	set AppleScript's text item delimiters to theDelimiter
+	-- create the array
+	set theArray to every text item of theString
+	-- restore the old setting
+	set AppleScript's text item delimiters to oldDelimiters
+	-- return the result
+	return theArray
+end theSplit
