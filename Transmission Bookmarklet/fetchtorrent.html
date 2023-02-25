@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- 
+
+this file and the Bookmark folder need to be live here: /Applications/Transmission.app/Contents/Resources/fetchtorrent.html
+
+Bookmark Link:
+javascript:(function()%7Bvar%20versionNum%20=%20%220.8%22;var%20serverAddress%20=%20%22192.168.4.101:9091%22;function%20LipoCookie()%7Bvar%20sCookie%20=%22%22;var%20aCookie%20=%20document.cookie.split(/;%5B%5Cs%5CxA0%5D*/);if%20(aCookie%20!=%20%22%22)%7Bfor%20(var%20i=0;%20i%20%3C%20aCookie.length;%20i++)%7Bif%20(aCookie%5Bi%5D.search(/(%5E__utm%7C%5E__qc)/)%20==%20-1)%7BsCookie%20=%20sCookie%20+%20aCookie%5Bi%5D%20+%20%27;%20%27;%7D%7D%7DsCookie=sCookie.replace(/;%5Cs+$/,%22%22);return%20sCookie;%7Dvar%20cookieString%20=%20LipoCookie();var%20a=document.getElementsByTagName(%27a%27);for(var%20i=0,j=a.length;i%3Cj;i++)%7Bvar%20linkurl%20=%20a%5Bi%5D.href;var%20testUrl%20=%20linkurl.substring(linkurl.lastIndexOf(%27/%27)%20+%201,%20linkurl.length);var%20testResult%20=%20testUrl.search(/(%5C.torrent$)/i);if%20(testResult%20==%20-1)%7Bvar%20testResult%20=%20linkurl.search(/(magnet:%5C?%7C%5C/get%7C%5C/download%7C%5C/dl%7C%5C/torrent)/i);%7Dif%20(testResult%20!=%20-1)%7Ba%5Bi%5D.setAttribute(%27target%27,%27_blank%27);a%5Bi%5D.setAttribute(%27href%27,%22http://%22%20+%20serverAddress%20+%20%22/transmission/web/fetchtorrent.html?torrentlink=%22%20+%20encodeURIComponent(linkurl)%20+%20%22&cs=%22%20+%20encodeURIComponent(cookieString)%20+%20%22&version=%22%20+%20versionNum%20);var%20img=document.createElement(%27img%27);img.setAttribute(%27class%27,%20%27new-window%27);img.setAttribute(%27src%27,%27data:image/gif;base64,%27+%27R0lGODlhEAAMALMLAL66tBISEjExMdTQyBoaGjs7OyUlJWZmZgAAAMzMzP///////wAAAAAAAAAAAAAA%27+%27ACH5BAEAAAsALAAAAAAQAAwAAAQ/cMlZqr2Tps13yVJBjOT4gYairqohCTDMsu4iHHgwr7UA/LqdopZS%27+%27DBBIpGG5lBQH0GgtU9xNJ9XZ1cnsNicRADs=%27);img.setAttribute(%27style%27,%27width:16px!important;height:12px!important;border:none!important;%27);a%5Bi%5D.appendChild(img);%7D%7D%7D)();
+
+(adjust ip in bookmarklet as necessary)
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<title>Fetch_Torrent</title>
+<meta name="viewport" content="width=device-width" />
+<style type="text/css">
+body {
+	background-color: #DCDCDC;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: left;
+}
+table { table-layout: fixed }
+a:link {
+	text-decoration: none;
+	color: #900;
+}
+a:visited {
+	text-decoration: none;
+	color: #900;
+}
+a:hover {
+	text-decoration: none;
+	color: #900;
+}
+a:active {
+	text-decoration: none;
+	color: #900;
+}
+#diag_list{
+	background:url(bookmarklet/images/diag_mid.png) repeat-y;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	padding-left:10px;
+	padding-right:10px;
+	text-align: center;
+	color: #333;
+	/* word-break: break-all; */
+	word-wrap: break-word;
+}
+h2 {
+	font-size: 11px;
+	margin: 15px 10px 8px 20px;
+	padding: 0;
+}
+h3 {
+	font-size: 11px;
+	color: #4c566c;
+	margin: 15px 10px 8px 20px;
+	padding: 0;
+}
+</style>
+
+
+<script language="JavaScript" type="text/JavaScript">
+
+var versionNum;
+var downloadUrl;
+var cookieString;
+var sessionId;
+
+// cross-site xmlhttprequest restrictions prevents incorporation of this javascript into the client-side bookmarklet, this server-side .html acts as a workaround
+
+// if you do NOT want to manually type in authentication then use the following url format:
+//   http://username:password@ip.address:port/this.html
+
+// parse URL parameters to array  
+// given http://localhost/this.html?name1="value1"&name2="value2"
+//   url.name1 will return "value1" 
+
+// parameters should be encodeURIComponent to avoid confusion with ? or = within a value
+
+(function(location){
+        var url = window.url = {},
+                query = location.search.substr(1),
+                arrParams = [],
+                param = '';
+                len = 0,
+                i = 0;
+        url._location = location;
+ 
+        arrParams = query.split("&");
+        len = arrParams.length
+        for(i=0; i<len; i++){
+                param = arrParams[i].split("=");
+                url[param[0]] = decodeURIComponent(param[1]);
+        }})(document.location);
+
+
+function AddTorrent(downloadUrl, cookieString, versionNum) {
+	
+	// POST data can be obtained from "transmission-remote [options]--debug 2>&1" in Terminal.app
+	// example json_data for --add
+	//   '{"arguments":{"filename":"http://www.example.com/new.torrent"},"method":"torrent-add","tag":8}'
+		
+	if (!versionNum) {
+		versionNum = "0.0";
+	}
+	
+	document.getElementById('version_num').innerHTML = versionNum;
+	
+	if (!downloadUrl) {
+		alertDiag("ERROR: Download URL is undefined!");
+		return;
+		// downloadUrl = this.href;
+	}
+	
+	downloadUrl=decodeURIComponent(downloadUrl); //reencode foreign characters
+	downloadUrl=downloadUrl.replace(/\s/g,"%20"); //fix url with "spaces" without encoding foreign characters
+	
+	var data = JSON.stringify({arguments:{cookies:cookieString,filename:downloadUrl},method:"torrent-add",tag:8});
+	// {"arguments":{"cookieString":"pass_hash=1; member_id=2","filename":"http://me/download.php/58153"},"method":"torrent-add","tag":8}
+	
+	var httpRequest = new XMLHttpRequest();
+	httpRequest.open("POST", "/transmission/rpc", true);
+		
+	if (sessionId) {
+		httpRequest.setRequestHeader("X-Transmission-Session-Id", sessionId);
+	}
+	
+	httpRequest.onreadystatechange = function() {
+	
+		if (httpRequest.readyState == 4) {
+			var httpResponse = httpRequest.responseText;			
+			try {
+				if (httpResponse.length > 0) {
+					if (httpRequest.status == 200) { // status OK
+						var httpResponse = httpRequest.responseText;
+						var jsonResponse = JSON.parse(httpResponse);
+						// json key containing dash-hyphen '-' is an invalid javascript identifier, so we need to use array [' '] syntax instead
+						if (jsonResponse.result.toLowerCase() == "success"){
+							alertDiag('Success! Added Torrent:<BR><BR>"' + jsonResponse['arguments']['torrent-added']['name'] +'"');
+							
+							setTimeout('window.location.replace("http://192.168.4.101:9091");', 3000); 
+						}
+						else {
+							alertDiag('ERROR: ' + jsonResponse.result);
+							// alert(httpResponse);
+						}
+					}
+					else if (httpRequest.status == 409) { // need new session-id
+						sessionId = httpRequest.getResponseHeader("X-Transmission-Session-Id");
+						AddTorrent(downloadUrl, cookieString, versionNum);
+					}
+					else if (httpRequest.status == 401) {
+						alertDiag("Error 401 - Unauthorized User");
+					}
+					else {
+						alertDiag("Unknown Http.Status: " + httpRequest.status);
+					}
+				} 
+				else {
+					alertDiag("ERROR: Empty response");
+				}
+			} 
+			catch (e) { 
+				alertDiag("Unknown Error: " + e);
+			}
+		}		
+	}	
+	httpRequest.send(data);
+};
+
+// close current window without prompt dialog
+function CloseWindow() {
+	window.open('', '_self', ''); window.close();
+}
+
+function alertDiag(responseDiag){
+	document.getElementById('diag_list').innerHTML = responseDiag;
+}
+
+</script>
+
+</head>
+
+<body onload = "AddTorrent(url.torrentlink, url.cs, url.version);">
+<table width="310" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td style="text-align: right; color: #333;"><a href="javascript:CloseWindow();">X</a></td>
+    <td rowspan="5" width="10">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><img src="bookmarklet/images/diag_top.png" width="299" height="32" /></td>
+  </tr>
+  <tr>
+    <td id="diag_list"><center>Downloading Torrent...<BR><BR><img src="bookmarklet/images/ajax-loader.gif" /><BR></center><H2>Please be patient while Transmission downloads the Torrent file to your computer.</H2></td>
+  </tr>
+  <tr>
+    <td><img src="bookmarklet/images/diag_bottom.png" width="299" /></td>
+  </tr>
+  <tr>
+    <td style="font-size: 14px;">&nbsp;</td>
+  </tr>
+</table>
+	<h3>
+		<center>
+			<p>Transmission-Add-Torrent-Bookmarklet - v<span id="version_num">0.0</span></p>
+			<p>Check <a target="_blank" href="https://github.com/bulljit/Transmission-Add-Torrent-Bookmarkelet">here</a> for updates.</p>
+		</center>
+	</h3>
+</body>
+</html>
