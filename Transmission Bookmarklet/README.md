@@ -5,7 +5,7 @@ There is some prep required, then you'll be able to tap a bookmarklet to change 
 ## Getting Started
 1. Copy all files to the folder
 ```
-transmission.app/resources/public_html
+/Applications/Transmission.app/Contents/Resources/public_html/
 ```
 2. Edit this link (the server address and port in the beginning of the link needs to changed to your local static transmission address), then create a bookmarklet with the link:
 ```
