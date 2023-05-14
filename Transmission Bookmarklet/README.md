@@ -24,7 +24,7 @@ This was entirely based/modified from someone else's code:
 
 How is this newer one different?
 
-- automatically redirects to transmission web vie after adding
+- automatically redirects to transmission web view after adding
 - updated icons
 - fix for new Transmission file structure
 
