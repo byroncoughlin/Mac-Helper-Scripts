@@ -4,8 +4,9 @@ Allows remote adding of torrents via bookmarlet.
 There is some prep required, then you'll be able to tap a bookmarklet to change links to auto add.
 ## Getting Started
 1. Copy all files to the folder
-‘’’ transmission.app/resources/public_html
-‘’’
+```
+transmission.app/resources/public_html
+```
 2. Make a bookmarklet with this link
 
 ```
