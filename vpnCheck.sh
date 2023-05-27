@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#xattr -d com.apple.quarantine /Users/server/Desktop/vpnCheck.sh
+# xattr -d com.apple.quarantine /Users/server/Desktop/vpnCheck.sh
+# */10 * * * * ~/vpnCheck.sh >/tmp/stdout.log 2>/tmp/stderr.log
 
 #check if VPN is on and connected
 if (( $(/sbin/ifconfig | grep -c 0xffffff00) == 1 )); then
