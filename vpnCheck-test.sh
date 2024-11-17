@@ -32,7 +32,7 @@ else
 		echo "it is!"
 	
 		echo "Asking NordVPN to quit"
-		osascript -e 'quit app "NordVPN"'
+		#osascript -e 'quit app "NordVPN"'
 
 		echo "Waiting 10 seconds"
 		sleep 10
@@ -40,9 +40,9 @@ else
 		if (ps aux | grep NordVPN | grep -v grep > /dev/null)
 		then
 			echo "Telling NordVPN to quit"
-			killall NordVPN
-			echo "Waiting 10 seconds"
-			sleep 10
+			#killall NordVPN
+			#echo "Waiting 10 seconds"
+			#sleep 10
 		fi
 	  
 	else
