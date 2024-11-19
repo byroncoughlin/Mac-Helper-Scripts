@@ -144,7 +144,7 @@ function AddTorrent(downloadUrl, cookieString, versionNum) {
 						if (jsonResponse.result.toLowerCase() == "success"){
 							alertDiag('Success! Added Torrent:<BR><BR>"' + jsonResponse['arguments']['torrent-added']['name'] +'"');
 							
-							setTimeout('window.location.replace("http://192.168.4.101:9091");', 3000); 
+							setTimeout('window.location.replace("http://192.168.4.102:9091");', 3000); 
 						}
 						else {
 							alertDiag('ERROR: ' + jsonResponse.result);
